@@ -1,9 +1,11 @@
 const express = require("express");
 const axios = require("axios");
+const path = require("path");
 const app = express();
 
 const apiVersion = process.env.TCG_API_VERSION;
 const token = process.env.TCG_API_TOKEN;
+const isProduction = process.env.NODE_ENV.trim() === "production";
 const basePath = `https://api.tcgplayer.com/${apiVersion}`;
 const headers = {
     "Content-Type": "application/json",
@@ -15,8 +17,13 @@ const headers = {
 app.set("port", process.env.PORT || 3001);
 
 // Express only serves static assets in production
-if (process.env.NODE_ENV === "production") {
-    app.use(express.static("client/build"));
+if (isProduction) {
+    console.log("Production build");
+    app.use(express.static(path.join(__dirname, "build")));
+
+    app.get("/", function (req, res) {
+        res.sendFile(path.join(__dirname, "build", "index.html"));
+    });
 }
 
 app.listen(app.get("port"), () => {
