@@ -12,7 +12,8 @@ const CardSearch = (props) => {
 
     const fetchCardList = async () => {
         setIsLoading(true);
-        const cardList = await advancedSearch({
+        setError(null);
+        const { data, error } = await advancedSearch({
             sort: "name",
             limit: 100,
             offset: 0,
@@ -20,11 +21,17 @@ const CardSearch = (props) => {
                 { name: "ProductName", values: ["Jace, the Mind Sculptor"] },
             ],
         });
-        setCardList(cardList);
+
+        if (error) {
+            setError(error);
+        } else if (data) {
+            setCardList(data.results);
+        }
         setIsLoading(false);
     };
     return (
         <div className="card-search">
+            {error && <div className="error-message">{error.message}</div>}
             <Input placeholder="Search card" onChange={setCardName} />
             <Button
                 className="card-search-button"
