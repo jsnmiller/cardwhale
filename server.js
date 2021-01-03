@@ -5,7 +5,8 @@ const app = express();
 
 const apiVersion = process.env.TCG_API_VERSION;
 const token = process.env.TCG_API_TOKEN;
-const isProduction = process.env.NODE_ENV?.trim() === "production";
+const isProduction =
+    process.env.NODE_ENV && process.env.NODE_ENV.trim() === "production";
 const basePath = `https://api.tcgplayer.com/${apiVersion}`;
 const headers = {
     "Content-Type": "application/json",
