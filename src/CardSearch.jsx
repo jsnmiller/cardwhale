@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Button } from "semantic-ui-react";
+import { Input, Button, Loader } from "semantic-ui-react";
 
 import { advancedSearch } from "./api/mtg-api";
 import "./CardSearch.scss";
@@ -13,26 +13,27 @@ const CardSearch = (props) => {
     const fetchCardList = async () => {
         setIsLoading(true);
         setError(null);
-        const { data, error } = await advancedSearch({
+        const { productDetailsList, error } = await advancedSearch({
             sort: "name",
             limit: 100,
             offset: 0,
-            filters: [
-                { name: "ProductName", values: ["Jace, the Mind Sculptor"] },
-            ],
+            filters: [{ name: "ProductName", values: [cardName] }],
         });
 
         if (error) {
             setError(error);
-        } else if (data) {
-            setCardList(data.results);
+        } else if (productDetailsList) {
+            setCardList(productDetailsList);
         }
         setIsLoading(false);
     };
     return (
         <div className="card-search">
             {error && <div className="error-message">{error.message}</div>}
-            <Input placeholder="Search card" onChange={setCardName} />
+            <Input
+                placeholder="Search card"
+                onChange={(_, data) => setCardName(data.value)}
+            />
             <Button
                 className="card-search-button"
                 primary
@@ -41,7 +42,14 @@ const CardSearch = (props) => {
                 Search
             </Button>
             <div className="card-search-results">
-                {cardList.map((card) => card)}
+                <Loader active={isLoading} inline="centered" />
+                {cardList.map((card) => (
+                    <div key={card.productId}>
+                        <a href={card.url} target="_blank">
+                            {card.name}
+                        </a>
+                    </div>
+                ))}
             </div>
         </div>
     );

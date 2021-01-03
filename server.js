@@ -5,7 +5,7 @@ const app = express();
 
 const apiVersion = process.env.TCG_API_VERSION;
 const token = process.env.TCG_API_TOKEN;
-const isProduction = process.env.NODE_ENV.trim() === "production";
+const isProduction = process.env.NODE_ENV?.trim() === "production";
 const basePath = `https://api.tcgplayer.com/${apiVersion}`;
 const headers = {
     "Content-Type": "application/json",
@@ -38,6 +38,20 @@ app.post("/api/*", (request, response) => {
         headers,
         url: `${basePath}/${request.path.split("/api/")[1]}`,
         data: request.body,
+    })
+        .then(({ data }) => {
+            response.json(data);
+        })
+        .catch((error) => {
+            response.json(error);
+        });
+});
+
+app.get("/api/*", (request, response) => {
+    axios({
+        method: "GET",
+        headers,
+        url: `${basePath}/${request.path.split("/api/")[1]}`,
     })
         .then(({ data }) => {
             response.json(data);
