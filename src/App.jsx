@@ -1,6 +1,5 @@
 import logo from "./logo.svg";
 import "./App.css";
-import { Input } from "semantic-ui-react";
 
 import CardSearch from "./CardSearch";
 

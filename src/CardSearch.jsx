@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Input, Button, Loader } from "semantic-ui-react";
+import { Input, Button, CircularProgress } from "@material-ui/core";
 
 import { advancedSearch } from "./api/mtg-api";
 import "./CardSearch.scss";
@@ -32,17 +32,18 @@ const CardSearch = (props) => {
             {error && <div className="error-message">{error.message}</div>}
             <Input
                 placeholder="Search card"
-                onChange={(_, data) => setCardName(data.value)}
+                onChange={(event) => setCardName(event.target.value)}
             />
             <Button
                 className="card-search-button"
-                primary
+                variant="contained"
+                color="primary"
                 onClick={fetchCardList}
             >
                 Search
             </Button>
             <div className="card-search-results">
-                <Loader active={isLoading} inline="centered" />
+                {isLoading && <CircularProgress />}
                 {cardList.map((card) => (
                     <div key={card.productId}>
                         <a href={card.url} target="_blank">
